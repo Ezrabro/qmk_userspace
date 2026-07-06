@@ -70,11 +70,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // FN = cool Fn layer 
     // -------------------------------------------------------------------------
     [FN] = LAYOUT_109_iso(
-        _______,            KC_BRID,  KC_BRIU,  KC_TASK,  KC_FILE,  UG_VALD,  UG_VALU,  KC_MPRV,  KC_MNXT,  KC_MPLY,  KC_MUTE,  KC_VOLD,  KC_VOLU, _______,  _______,  _______,  _______,  _______,  _______,  _______,
+        QK_BOOT,            KC_BRID,  KC_BRIU,  KC_TASK,  KC_FILE,  UG_VALD,  UG_VALU,  KC_MPRV,  KC_MNXT,  KC_MPLY,  KC_MUTE,  KC_VOLD,  KC_VOLU, _______,  _______,  _______,  _______,  _______,  _______,  _______,
         _______,  BT_HST1,  BT_HST2,  BT_HST3,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______, _______,  _______,  _______,  CALC_TOGG,  _______,  _______,  _______,
         UG_TOGG,  UG_NEXT,  UG_VALU,  UG_HUEU,  UG_SATU,  UG_SPDU,  _______,  _______,  _______,  _______,  _______,  _______,  _______,           _______,  _______,  _______,  _______,  _______,  _______,  _______,
         _______,  UG_PREV,  UG_VALD,  UG_HUED,  UG_SATD,  UG_SPDD,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,                               _______,  _______,  _______,
-        _______,  QK_BOOT,  _______,  _______,  _______,  _______,  BAT_LVL,  _______,  _______,  _______,  _______,  _______,            _______,           _______,            _______,  _______,  _______,  _______,
+        _______,  _______,  _______,  _______,  _______,  _______,  BAT_LVL,  _______,  _______,  _______,  _______,  _______,            _______,           _______,            _______,  _______,  _______,  _______,
         _______,  _______,  _______,                                _______,                                _______,  _______,  _______,  _______, _______,  _______,  _______,  _______,            _______           ),
 
 };
@@ -84,15 +84,16 @@ bool backspace_mode = false;
 uint16_t backspace_timer = 0;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (!process_record_keychron_common(keycode, record)) {
-        return false;
-    }
     // calc
     if (keycode == CALC_TOGG) {
         if (record->event.pressed) calculator_toggle();
         return false;
     }
-    return calculator_process_record(keycode, record);
+
+    if (calculator_is_active()) {
+        return calculator_process_record(keycode, record);
+    }
+
     switch (keycode) {
         case LT(0, KC_ENT):
 
@@ -133,7 +134,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
 
     }
-
+    if (!process_record_keychron_common(keycode, record)) {
+        return false;
+    }
     return true;
 }
 
