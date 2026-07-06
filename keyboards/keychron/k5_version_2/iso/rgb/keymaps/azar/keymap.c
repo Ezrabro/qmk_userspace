@@ -16,7 +16,11 @@
 
 #include QMK_KEYBOARD_H
 #include "keychron_common.h"
+#include "features/calculator.h"
 
+const uint8_t calc_bit_leds[] = {
+21,  22,  23,  24,  25,  26,  27,  28,  29,  30,
+};
 
 enum layers {
     BASE,   // Hardware "Mac" side  → QWERTY (Windows)
@@ -25,7 +29,7 @@ enum layers {
 };
 
 enum custom_keycodes {
-    KC_CYCLE_UNI = SAFE_RANGE,
+    CALC_TOGG = SAFE_RANGE,
 };
 
 // clang-format off
@@ -67,7 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // -------------------------------------------------------------------------
     [FN] = LAYOUT_109_iso(
         _______,            KC_BRID,  KC_BRIU,  KC_TASK,  KC_FILE,  UG_VALD,  UG_VALU,  KC_MPRV,  KC_MNXT,  KC_MPLY,  KC_MUTE,  KC_VOLD,  KC_VOLU, _______,  _______,  _______,  _______,  _______,  _______,  _______,
-        _______,  BT_HST1,  BT_HST2,  BT_HST3,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______, _______,  _______,  _______,  _______,  _______,  _______,  _______,
+        _______,  BT_HST1,  BT_HST2,  BT_HST3,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______, _______,  _______,  _______,  CALC_TOGG,  _______,  _______,  _______,
         UG_TOGG,  UG_NEXT,  UG_VALU,  UG_HUEU,  UG_SATU,  UG_SPDU,  _______,  _______,  _______,  _______,  _______,  _______,  _______,           _______,  _______,  _______,  _______,  _______,  _______,  _______,
         _______,  UG_PREV,  UG_VALD,  UG_HUED,  UG_SATD,  UG_SPDD,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,                               _______,  _______,  _______,
         _______,  QK_BOOT,  _______,  _______,  _______,  _______,  BAT_LVL,  _______,  _______,  _______,  _______,  _______,            _______,           _______,            _______,  _______,  _______,  _______,
@@ -83,7 +87,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!process_record_keychron_common(keycode, record)) {
         return false;
     }
-
+    // calc
+    if (keycode == CALC_TOGG) {
+        if (record->event.pressed) calculator_toggle();
+        return false;
+    }
+    return calculator_process_record(keycode, record);
     switch (keycode) {
         case LT(0, KC_ENT):
 
@@ -130,6 +139,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 bool rgb_matrix_indicators_user(void) {
+    if (calculator_is_active()) {
+        calculator_update_rgb();
+        return false;
+    }
     if (host_keyboard_led_state().caps_lock || is_caps_word_on()) {
         rgb_matrix_set_color(CAPS_LOCK_INDEX, 255, 255, 255);
     }
@@ -145,5 +158,7 @@ bool dip_switch_update_kb(uint8_t index, bool active) {
     return dip_switch_update_user(index, active);
 }
 
-
+void keyboard_post_init_user(void) {
+    calculator_init(calc_bit_leds, ARRAY_SIZE(calc_bit_leds), 20, 37);
+}
 
