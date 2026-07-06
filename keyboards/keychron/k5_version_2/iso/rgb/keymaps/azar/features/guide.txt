@@ -1,0 +1,56 @@
+#define UNICODE_SELECTED_MODES UNICODE_MODE_WINDOWS
+
+
+
+
+
+
+
+
+case KC_CYCLE_UNI:
+    if (record->event.pressed) {
+        uint8_t mode = get_unicode_typing_mode();
+
+        mode++;
+
+        if (mode >= UNCODES_MODE_END) {
+            mode = UCTM_NO_MODE;
+        }
+
+        set_unicode_typing_mode(mode);
+    }
+    return false;
+
+
+
+
+
+
+
+if (!process_record_unicode_typing(keycode, record)) {
+    return false;
+}
+
+
+
+
+
+
+
+
+enum custom_keycodes {
+    KC_CYCLE_UNI = SAFE_RANGE,
+};
+
+
+
+
+SRC += features/unicode_typing.c
+
+
+
+
+
+UNICODE_ENABLE = yes
+UNICODE_COMMON = yes
+
