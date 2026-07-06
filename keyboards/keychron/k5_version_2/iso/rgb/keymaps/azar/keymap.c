@@ -165,3 +165,23 @@ void keyboard_post_init_user(void) {
     calculator_init(calc_bit_leds, ARRAY_SIZE(calc_bit_leds), 20, 37);
 }
 
+#ifdef WELCOME_ANIMATION_ACTIVE
+void housekeeping_task_user(void) {
+    static bool     wa_applied   = false;
+    static uint16_t wa_boot_time = 0;
+
+    if (!wa_applied) {
+        if (wa_boot_time == 0) wa_boot_time = timer_read() | 1; // avoid 0
+
+        // Keep re-forcing our mode every tick for ~700ms after boot.
+        // Whatever Keychron's own boot indicator logic sets, this wins
+        // on the next scan cycle.
+        rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_welcome_animation);
+
+        if (timer_elapsed(wa_boot_time) > 700) {
+            wa_applied = true;
+        }
+    }
+}
+#endif
+
