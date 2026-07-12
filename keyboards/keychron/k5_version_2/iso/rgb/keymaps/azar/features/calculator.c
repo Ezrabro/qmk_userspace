@@ -1,5 +1,6 @@
 #include "calculator.h"
 #include <limits.h>
+#include <stdio.h>   // snprintf
 
 static const uint8_t *calc_leds   = NULL;
 static uint8_t        calc_nleds  = 0;
@@ -53,6 +54,33 @@ static void apply_pending(void) {
     negative    = false;
 }
 
+static void send_decimal(long value) {
+    char buf[16];
+    snprintf(buf, sizeof(buf), "%ld", value);
+    SEND_STRING(buf);
+}
+
+static void send_binary(unsigned long uval) {
+    char buf[34];
+    uint8_t i = 0;
+
+    if (uval == 0) {
+        buf[i++] = '0';
+    } else {
+        char tmp[32];
+        uint8_t n = 0;
+        while (uval > 0) {
+            tmp[n++] = (uval & 1) ? '1' : '0';
+            uval >>= 1;
+        }
+        while (n > 0) {
+            buf[i++] = tmp[--n]; // reverse into buf, MSB first
+        }
+    }
+    buf[i] = '\0';
+    SEND_STRING(buf);
+}
+
 bool calculator_process_record(uint16_t keycode, keyrecord_t *record) {
     if (!active) return true;
 
@@ -62,6 +90,7 @@ bool calculator_process_record(uint16_t keycode, keyrecord_t *record) {
             case KC_P1 ... KC_P0:
             case KC_PPLS: case KC_PMNS: case KC_PAST: case KC_PSLS:
             case KC_PEQL: case KC_PENT: case KC_PDOT: case KC_BSPC:
+            case KC_V: case KC_B:
                 return false;
             default:
                 return true;
@@ -102,6 +131,19 @@ bool calculator_process_record(uint16_t keycode, keyrecord_t *record) {
             show_result = true;
             return false;
 
+        case KC_V: {
+            long value = show_result ? accumulator : (negative ? -current_num : current_num);
+            send_decimal(value);
+            return false;
+        }
+
+        case KC_B: {
+            long value = show_result ? accumulator : (negative ? -current_num : current_num);
+            unsigned long uval = (value < 0) ? (unsigned long)(-value) : (unsigned long)value;
+            send_binary(uval);
+            return false;
+        }
+
         default:
             return true; // anything else on the layer behaves normally
     }
@@ -141,3 +183,5 @@ void calculator_update_rgb(void) {
         rgb_matrix_set_color(calc_sign, RGB_RED);
     }
 }
+
+
