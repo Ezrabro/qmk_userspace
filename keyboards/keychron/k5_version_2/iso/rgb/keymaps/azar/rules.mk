@@ -10,6 +10,3 @@ SPACE_CADET_ENABLE = no
 GRAVE_ESC_ENABLE = no
 MAGIC_ENABLE = no
 MUSIC_ENABLE = no
-
-
-SRC += features/calculator.c

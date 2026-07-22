@@ -1,3 +1,7 @@
 {
-  "modules": ["getreuer/orbital_mouse"]
+  "modules": [
+
+    "azar/calculator",
+    "azar/better_rgb_keys"
+]
 }

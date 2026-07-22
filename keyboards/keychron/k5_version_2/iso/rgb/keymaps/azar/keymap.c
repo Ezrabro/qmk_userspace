@@ -16,22 +16,17 @@
 
 #include QMK_KEYBOARD_H
 #include "keychron_common.h"
-#include "features/calculator.h"
-
-const uint8_t calc_bit_leds[] = {
-21,  22,  23,  24,  25,  26,  27,  28,  29,  30,
-};
 
 enum layers {
     BASE,   // Hardware "Mac" side  → QWERTY (Windows)
     COLEMAK_BASE,   // Hardware "Win" side  → Colemak-DH Wide ISO
     FN,
-    orbitMaouse,
+    // orbitMaouse,
 };
 
-enum custom_keycodes {
-    CALC_TOGG = SAFE_RANGE,
-};
+// enum custom_keycodes {
+//     CALC_TOGG = SAFE_RANGE,
+// };
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -54,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_GRV,   KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC, KC_F20,   KC_F21,  KC_F22,  KC_NUM,   KC_PSLS,  KC_PAST,  KC_PMNS,
         KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,           KC_DEL,   KC_HOME,   KC_END,  KC_P7,    KC_P8,    KC_P9,    KC_PPLS,
         LT(0, KC_ENT),   KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,  KC_NUHS,  KC_ENT,                                KC_P4,    KC_P5,    KC_P6,
-        KC_LSFT,  TG(orbitMaouse),  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,            KC_RSFT,           KC_UP,              KC_P1,    KC_P2,    KC_P3,    KC_PENT,
+        KC_LSFT,  KC_NUBS,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,            KC_RSFT,           KC_UP,              KC_P1,    KC_P2,    KC_P3,    KC_PENT,
         KC_LCTL,  KC_LWIN,  KC_LALT,                                KC_SPC,                                 KC_RALT,  KC_RWIN, MO(FN),KC_RCTL, KC_LEFT,  KC_DOWN,  KC_RGHT,  KC_P0,              KC_PDOT          ),
 
     // -------------------------------------------------------------------------
@@ -82,20 +77,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // -------------------------------------------------------------------------
     [FN] = LAYOUT_109_iso(
         QK_BOOT,            KC_BRID,  KC_BRIU,  KC_TASK,  KC_FILE,  RM_VALD,  RM_VALU,  KC_MPRV,  KC_MNXT,  KC_MPLY,  KC_MUTE,  KC_VOLD,  KC_VOLU, _______,  _______,  _______,  _______,  _______,  _______,  _______,
-        _______,  BT_HST1,  BT_HST2,  BT_HST3,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______, _______,  _______,  _______,  CALC_TOGG,  _______,  _______,  _______,
+        _______,  BT_HST1,  BT_HST2,  BT_HST3,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______, _______,  _______,  _______,  CALCT,  _______,  _______,  _______,
         RM_TOGG,  RM_NEXT,  RM_VALU,  RM_HUEU,  RM_SATU,  RM_SPDU,  _______,  _______,  _______,  _______,  _______,  _______,  _______,           _______,  _______,  _______,  _______,  _______,  _______,  _______,
         _______,  RM_PREV,  RM_VALD,  RM_HUED,  RM_SATD,  RM_SPDD,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,                               _______,  _______,  _______,
         _______,  _______,  _______,  _______,  _______,  _______,  BAT_LVL,  _______,  _______,  _______,  _______,  _______,            _______,           _______,            _______,  _______,  _______,  _______,
         _______,  _______,  _______,                                _______,                                _______,  _______,  _______,  _______, _______,  _______,  _______,  _______,            _______           ),
 
 
-    [orbitMaouse] = LAYOUT_109_iso(
-    _______,            _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______, _______,  _______,  _______,  _______,  _______,  _______,  _______,
-    _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______, _______,  _______,  _______,  _______,  _______,  _______,  _______,
-    _______,  _______,  _______,  _______,  _______,  _______,  _______,  OM_W_U ,  OM_BTNS,  OM_U   ,  OM_DBLS,  OM_FAST,  _______,           _______,  _______,  _______,  _______,  _______,  _______,  _______,
-    _______,  _______,  _______,  _______,  _______,  _______,  _______,  OM_W_D ,  OM_L   ,  OM_D   ,  OM_R   ,  OM_SLOW,  _______,  _______,                               _______,  _______,  _______,
-    _______,  _______,  _______,  _______,  _______,  _______,  _______,  OM_RELS,  OM_HLDS,  OM_SEL1,  OM_SEL2,  OM_SEL3,            _______,           _______,            _______,  _______,  _______,  _______,
-    _______,  _______,  _______,                                _______,                                _______,  _______,  _______,  _______, _______,  _______,  _______,  _______,            _______           ),
+    // [orbitMaouse] = LAYOUT_109_iso(
+    // _______,            _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______, _______,  _______,  _______,  _______,  _______,  _______,  _______,
+    // _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______, _______,  _______,  _______,  _______,  _______,  _______,  _______,
+    // _______,  _______,  _______,  _______,  _______,  _______,  _______,  MS_WHLU ,  MS_BTN1,  MS_UP   ,  MS_BTN2,  _______,  _______,           _______,  _______,  _______,  _______,  _______,  _______,  _______,
+    // _______,  _______,  _______,  _______,  _______,  _______,  _______,  MS_WHLD ,  MS_LEFT   ,  MS_DOWN   ,  MS_RGHT   ,  _______,  _______,  _______,                               _______,  _______,  _______,
+    // _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,           _______,            _______,  _______,  _______,  _______,
+    // _______,  _______,  _______,                                _______,                                _______,  _______,  _______,  _______, _______,  _______,  _______,  _______,            _______           ),
 
 };
 
@@ -104,16 +99,6 @@ bool backspace_mode = false;
 uint16_t backspace_timer = 0;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // calc
-    if (keycode == CALC_TOGG) {
-        if (record->event.pressed) calculator_toggle();
-        return false;
-    }
-
-    if (calculator_is_active()) {
-        return calculator_process_record(keycode, record);
-    }
-
     switch (keycode) {
         case LT(0, KC_ENT):
 
@@ -162,10 +147,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 bool rgb_matrix_indicators_user(void) {
-    if (calculator_is_active()) {
-        calculator_update_rgb();
-        return false;
-    }
     if (host_keyboard_led_state().caps_lock || is_caps_word_on()) {
         rgb_matrix_set_color(CAPS_LOCK_INDEX, 255, 255, 255);
     }
@@ -179,10 +160,6 @@ bool dip_switch_update_kb(uint8_t index, bool active) {
         default_layer_set(1UL << (active ? BASE : COLEMAK_BASE));
     }
     return dip_switch_update_user(index, active);
-}
-
-void keyboard_post_init_user(void) {
-    calculator_init(calc_bit_leds, ARRAY_SIZE(calc_bit_leds), 20, 37);
 }
 
 #ifdef WELCOME_ANIMATION_ACTIVE
